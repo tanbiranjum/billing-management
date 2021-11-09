@@ -1,11 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
+
 
 function AppBar() {
   return (
-    
+
   )
 }
 
@@ -14,7 +11,6 @@ function App() {
     <div className="App">
       <Button variant="contained">Hello World</Button>
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
           Hi my name is tanvir
         </p>
