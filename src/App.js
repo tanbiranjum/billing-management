@@ -28,6 +28,7 @@ const AppBar = (props) => (
     {...props}
   />
 )
+import { CssBaseline, Typography } from '@mui/material'
 
 function App() {
   const [showSidebar, setShowSidebar] = useState(false)
@@ -57,6 +58,10 @@ function App() {
         </Box>
       </Box>
     </Grommet>
+    <div className="App">
+      {/* <CssBaseline /> */}
+      <Typography variant="h1">Hello from Me</Typography>
+    </div>
   )
 }
 
