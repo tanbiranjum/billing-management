@@ -1,13 +1,13 @@
 import { createTheme } from '@mui/material'
-import { green, orange } from '@mui/material/colors'
+import { blue, orange } from '@mui/material/colors'
 
 const theme = createTheme({
   palette: {
-    primary: green,
+    primary: blue,
   },
   status: {
     danger: orange[500],
-    test: green,
+    test: blue,
   },
 })
 
