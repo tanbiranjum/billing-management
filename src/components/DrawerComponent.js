@@ -2,6 +2,7 @@ import { Divider, List, ListItem, ListItemIcon, ListItemText, Toolbar } from '@m
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import NoteAltIcon from '@mui/icons-material/NoteAlt'
 import SettingsIcon from '@mui/icons-material/Settings'
+import SearchIcon from '@mui/icons-material/Search'
 
 const DrawerComponent = () => (
   <div>
@@ -13,6 +14,12 @@ const DrawerComponent = () => (
           <NoteAltIcon />
         </ListItemIcon>
         <ListItemText primary="Overview" />
+      </ListItem>
+      <ListItem button key="Search">
+        <ListItemIcon>
+          <SearchIcon />
+        </ListItemIcon>
+        <ListItemText primary="Search" />
       </ListItem>
       <ListItem button key="New Bill">
         <ListItemIcon>

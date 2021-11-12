@@ -6,6 +6,7 @@ const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 800,
+    title: 'Ag Software',
     webPreferences: {
       nodeIntegration: true,
     },
