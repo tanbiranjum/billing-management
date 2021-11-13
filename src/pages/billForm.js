@@ -1,12 +1,9 @@
 import { useState } from 'react'
-import { Button, Grid, Typography } from '@mui/material'
+import { Button, Grid, Typography, TextField } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
-import { makeStyles } from '@mui/styles'
-
 import TextFieldWrapper from '../components/FormsUI/TextField'
 import SelectWrapper from '../components/FormsUI/Select'
 import DateTimePicker from '../components/FormsUI/DateTimePicker'
-
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 
@@ -27,22 +24,28 @@ const INITIAL_FORM_STATE = {
 
 const FORM_VALIDATION = Yup.object().shape({})
 
-const useStyles = makeStyles(() => ({
-  textField: {
-    marginTop: '10px',
-    marginBottom: '10px',
-    width: '90%',
-  },
-  formElement: {
-    flex: 1,
-  },
-}))
-
 const BillForm = () => {
   const [productDetails, setProductDetails] = useState([
     { color: '', tileSize: '', quantity: 0, rate: 0 },
   ])
-  const classes = useStyles()
+
+  const handleChangeField = (index, event) => {
+    const values = [...productDetails]
+    values[index][event.target.name] = event.target.value
+    setProductDetails(values)
+  }
+
+  const handleAddFields = () => {
+    setProductDetails([
+      ...productDetails,
+      {
+        color: '',
+        tileSize: '',
+        quantity: 0,
+        rate: 0,
+      },
+    ])
+  }
 
   return (
     <Grid container direction="column">
@@ -64,7 +67,7 @@ const BillForm = () => {
             console.log(value)
           }}
         >
-          <Form className={classes.formElement}>
+          <Form>
             <Grid item container spacing={2}>
               <Grid item xs={12}>
                 <Typography>Customer details</Typography>
@@ -85,7 +88,7 @@ const BillForm = () => {
                 <SelectWrapper name="code" label="Code" />
               </Grid>
               <Grid item xs={12}>
-                <SelectWrapper name="code" label="Code" />
+                <SelectWrapper name="code" label="Marketing Officer" />
               </Grid>
               <Grid item xs={12}>
                 <Typography>Order informations</Typography>
@@ -94,23 +97,69 @@ const BillForm = () => {
                 <TextFieldWrapper name="description" label="Description" />
               </Grid>
               <Grid item container xs={12} spacing={2}>
-                <Grid item xs={3}>
-                  <TextFieldWrapper name="color" label="Color" />
-                </Grid>
-                <Grid item xs={3}>
-                  <TextFieldWrapper name="tileSize" label="Tile Size" />
-                </Grid>
-                <Grid item xs={3}>
-                  <TextFieldWrapper name="quantity" label="Quantity" />
-                </Grid>
-                <Grid item xs={3}>
-                  <TextFieldWrapper name="rate" label="Rate" />
-                </Grid>
-                <Grid item xs={12}>
-                  <Button fullWidth variant="outlined">
-                    Add
-                  </Button>
-                </Grid>
+                {productDetails.map((productDetail, index) => (
+                  <Grid item container xs={12} spacing={2}>
+                    <Grid item xs={3}>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        name="color"
+                        label="Color"
+                        onChange={(event) => {
+                          handleChangeField(index, event)
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        name="tileSize"
+                        label="Tile Size"
+                        onChange={(event) => {
+                          handleChangeField(index, event)
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        name="quantity"
+                        label="Quantity"
+                        onChange={(event) => {
+                          handleChangeField(index, event)
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        name="rate"
+                        label="Rate"
+                        onChange={(event) => {
+                          handleChangeField(index, event)
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      {productDetails.length === (index + 1) ? <Button
+                        fullWidth
+                        variant="outlined"
+                        onClick={handleAddFields}
+                      >
+                        Add
+                      </Button> : <Button
+                        fullWidth
+                        variant="outlined"
+                        onClick={handleAddFields}
+                      >
+                        Delete
+                      </Button>}
+                    </Grid>
+                  </Grid>
+                ))}
               </Grid>
             </Grid>
           </Form>
