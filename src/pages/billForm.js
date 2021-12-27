@@ -4,7 +4,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt'
 import TextFieldWrapper from '../components/FormsUI/TextField'
 import SelectWrapper from '../components/FormsUI/Select'
 import DateTimePicker from '../components/FormsUI/DateTimePicker'
-import { Formik, Form } from 'formik'
+import { Formik, Form, FieldArray } from 'formik'
 import * as Yup from 'yup'
 
 const INITIAL_FORM_STATE = {
@@ -15,30 +15,44 @@ const INITIAL_FORM_STATE = {
   code: '',
   marketingOfficer: '',
   description: '',
-  color: '',
-  quantity: 0,
-  tileSize: '',
-  rate: 0,
+  color: [''],
+  quantity: [''],
+  tileSize: [''],
+  rate: [''],
   price: 0,
 }
 
-const FORM_VALIDATION = Yup.object().shape({})
+const FORM_VALIDATION = Yup.object().shape({
+  name: Yup.string().required('Required'),
+  phone: Yup.number().required('Required'),
+  address: Yup.string().required('Required'),
+  date: Yup.date().required('Required'),
+  code: Yup.string().required('Required'),
+  marketingOfficer: Yup.string().required('Required'),
+  description: Yup.string().required('Required'),
+  color: Yup.string().required('Required'),
+  quantity: Yup.number().required('Required'),
+  tileSize: Yup.string().required('Required'),
+  rate: Yup.number().required('Required'),
+  price: Yup.number().required('Required'),
+})
 
 const BillForm = () => {
   const [productDetails, setProductDetails] = useState([
-    { color: '', tileSize: '', quantity: 0, rate: 0 },
+    { id: Date.now(), color: '', tileSize: '', quantity: 0, rate: 0 },
   ])
 
-  const handleChangeField = (index, event) => {
+  const handleChangeField = (event, index) => {
     const values = [...productDetails]
     values[index][event.target.name] = event.target.value
     setProductDetails(values)
   }
 
-  const handleAddFields = () => {
+  const handleAddField = () => {
     setProductDetails([
       ...productDetails,
       {
+        id: Date.now(),
         color: '',
         tileSize: '',
         quantity: 0,
@@ -46,6 +60,16 @@ const BillForm = () => {
       },
     ])
   }
+
+  const handleRemoveField = (index) => {
+    let newProductDetails = [...productDetails]
+    newProductDetails = newProductDetails.filter(
+      (product, productIndex) => index !== productIndex
+    )
+    setProductDetails(newProductDetails)
+  }
+
+  const handleSubmit = () => {}
 
   return (
     <Grid container direction="column">
@@ -62,7 +86,7 @@ const BillForm = () => {
       <Grid container item>
         <Formik
           initialValues={{ ...INITIAL_FORM_STATE }}
-          validationSchema={FORM_VALIDATION}
+          // validationSchema={FORM_VALIDATION}
           onSubmit={(value) => {
             console.log(value)
           }}
@@ -97,8 +121,18 @@ const BillForm = () => {
                 <TextFieldWrapper name="description" label="Description" />
               </Grid>
               <Grid item container xs={12} spacing={2}>
+                {productDetails.reduce(
+                  (totalPrice, item) => item.rate * 1 + totalPrice,
+                  0
+                )}
                 {productDetails.map((productDetail, index) => (
-                  <Grid item container xs={12} spacing={2}>
+                  <Grid
+                    item
+                    container
+                    xs={12}
+                    spacing={2}
+                    key={productDetail.id}
+                  >
                     <Grid item xs={3}>
                       <TextField
                         fullWidth
@@ -106,7 +140,7 @@ const BillForm = () => {
                         name="color"
                         label="Color"
                         onChange={(event) => {
-                          handleChangeField(index, event)
+                          handleChangeField(event, index)
                         }}
                       />
                     </Grid>
@@ -117,7 +151,7 @@ const BillForm = () => {
                         name="tileSize"
                         label="Tile Size"
                         onChange={(event) => {
-                          handleChangeField(index, event)
+                          handleChangeField(event, index)
                         }}
                       />
                     </Grid>
@@ -128,7 +162,7 @@ const BillForm = () => {
                         name="quantity"
                         label="Quantity"
                         onChange={(event) => {
-                          handleChangeField(index, event)
+                          handleChangeField(event, index)
                         }}
                       />
                     </Grid>
@@ -138,28 +172,43 @@ const BillForm = () => {
                         variant="outlined"
                         name="rate"
                         label="Rate"
+                        type="number"
                         onChange={(event) => {
-                          handleChangeField(index, event)
+                          handleChangeField(event, index)
                         }}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      {productDetails.length === (index + 1) ? <Button
-                        fullWidth
-                        variant="outlined"
-                        onClick={handleAddFields}
-                      >
-                        Add
-                      </Button> : <Button
-                        fullWidth
-                        variant="outlined"
-                        onClick={handleAddFields}
-                      >
-                        Delete
-                      </Button>}
+                      {index ? (
+                        <Button
+                          fullWidth
+                          variant="outlined"
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          -Remove
+                        </Button>
+                      ) : (
+                        ''
+                      )}
                     </Grid>
                   </Grid>
                 ))}
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => {
+                    handleAddField()
+                  }}
+                >
+                  + ADD
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Button fullWidth type="submit" variant="contained">
+                  Submit
+                </Button>
               </Grid>
             </Grid>
           </Form>

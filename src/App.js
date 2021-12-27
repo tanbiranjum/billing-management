@@ -1,8 +1,8 @@
-import { AppBar, Box, CssBaseline, Drawer, IconButton, Typography, Toolbar } from '@mui/material'
+import { Box, CssBaseline, Drawer, Toolbar } from '@mui/material'
 import DrawerComponent from './components/DrawerComponent'
-import MenuIcon from '@mui/icons-material/Menu'
 import { useState } from 'react'
 import BillForm from './pages/billForm'
+import AppBarUI from './components/AppBar'
 
 const drawerWidth = 240
 
@@ -17,30 +17,15 @@ function App() {
     <div className="App">
       <CssBaseline />
       <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          sx={{
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            ml: { sm: `${drawerWidth}px` },
-          }}
+        <AppBarUI
+          currentState={mobileOpen}
+          setMobileOpenState={setMobileOpen}
+        />
+        <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          aria-label="mailbox folders"
         >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              AG Billing Software
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }} aria-label="mailbox folders">
           <Drawer
             variant="temporary"
             open={mobileOpen}
@@ -50,7 +35,10 @@ function App() {
             }}
             sx={{
               display: { xs: 'block', sm: 'none' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+              '& .MuiDrawer-paper': {
+                boxSizing: 'border-box',
+                width: drawerWidth,
+              },
             }}
           >
             <DrawerComponent />
@@ -59,14 +47,24 @@ function App() {
             variant="permanent"
             sx={{
               display: { xs: 'none', sm: 'block' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+              '& .MuiDrawer-paper': {
+                boxSizing: 'border-box',
+                width: drawerWidth,
+              },
             }}
             open
           >
             <DrawerComponent />
           </Drawer>
         </Box>
-        <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+          }}
+        >
           <Toolbar />
           <BillForm />
         </Box>
