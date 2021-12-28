@@ -1,11 +1,11 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { Button, Grid, Typography, TextField } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import TextFieldWrapper from '../components/FormsUI/TextField'
 import SelectWrapper from '../components/FormsUI/Select'
 import DateTimePicker from '../components/FormsUI/DateTimePicker'
-import { Formik, Form, FieldArray } from 'formik'
-import * as Yup from 'yup'
+import { Formik, Form, Field, FieldArray } from 'formik'
+import FORM_VALIDATION from '../validation/formValidation'
 
 const INITIAL_FORM_STATE = {
   name: '',
@@ -15,61 +15,20 @@ const INITIAL_FORM_STATE = {
   code: '',
   marketingOfficer: '',
   description: '',
-  color: [''],
-  quantity: [''],
-  tileSize: [''],
-  rate: [''],
+  products: [
+    {
+      id: Date.now(),
+      color: 'RED',
+      quantity: '',
+      tileSize: '',
+      rate: '',
+    },
+  ],
   price: 0,
 }
 
-const FORM_VALIDATION = Yup.object().shape({
-  name: Yup.string().required('Required'),
-  phone: Yup.number().required('Required'),
-  address: Yup.string().required('Required'),
-  date: Yup.date().required('Required'),
-  code: Yup.string().required('Required'),
-  marketingOfficer: Yup.string().required('Required'),
-  description: Yup.string().required('Required'),
-  color: Yup.string().required('Required'),
-  quantity: Yup.number().required('Required'),
-  tileSize: Yup.string().required('Required'),
-  rate: Yup.number().required('Required'),
-  price: Yup.number().required('Required'),
-})
-
 const BillForm = () => {
-  const [productDetails, setProductDetails] = useState([
-    { id: Date.now(), color: '', tileSize: '', quantity: 0, rate: 0 },
-  ])
-
-  const handleChangeField = (event, index) => {
-    const values = [...productDetails]
-    values[index][event.target.name] = event.target.value
-    setProductDetails(values)
-  }
-
-  const handleAddField = () => {
-    setProductDetails([
-      ...productDetails,
-      {
-        id: Date.now(),
-        color: '',
-        tileSize: '',
-        quantity: 0,
-        rate: 0,
-      },
-    ])
-  }
-
-  const handleRemoveField = (index) => {
-    let newProductDetails = [...productDetails]
-    newProductDetails = newProductDetails.filter(
-      (product, productIndex) => index !== productIndex
-    )
-    setProductDetails(newProductDetails)
-  }
-
-  const handleSubmit = () => {}
+  // const handleSubmit = () => {}
 
   return (
     <Grid container direction="column">
@@ -86,7 +45,7 @@ const BillForm = () => {
       <Grid container item>
         <Formik
           initialValues={{ ...INITIAL_FORM_STATE }}
-          // validationSchema={FORM_VALIDATION}
+          validationSchema={FORM_VALIDATION}
           onSubmit={(value) => {
             console.log(value)
           }}
@@ -112,7 +71,7 @@ const BillForm = () => {
                 <SelectWrapper name="code" label="Code" />
               </Grid>
               <Grid item xs={12}>
-                <SelectWrapper name="code" label="Marketing Officer" />
+                <SelectWrapper name="marketingOfficer" label="Marketing Officer" />
               </Grid>
               <Grid item xs={12}>
                 <Typography>Order informations</Typography>
@@ -121,89 +80,94 @@ const BillForm = () => {
                 <TextFieldWrapper name="description" label="Description" />
               </Grid>
               <Grid item container xs={12} spacing={2}>
-                {productDetails.reduce(
-                  (totalPrice, item) => item.rate * 1 + totalPrice,
-                  0
-                )}
-                {productDetails.map((productDetail, index) => (
-                  <Grid
-                    item
-                    container
-                    xs={12}
-                    spacing={2}
-                    key={productDetail.id}
-                  >
-                    <Grid item xs={3}>
-                      <TextField
-                        fullWidth
-                        variant="outlined"
-                        name="color"
-                        label="Color"
-                        onChange={(event) => {
-                          handleChangeField(event, index)
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextField
-                        fullWidth
-                        variant="outlined"
-                        name="tileSize"
-                        label="Tile Size"
-                        onChange={(event) => {
-                          handleChangeField(event, index)
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextField
-                        fullWidth
-                        variant="outlined"
-                        name="quantity"
-                        label="Quantity"
-                        onChange={(event) => {
-                          handleChangeField(event, index)
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextField
-                        fullWidth
-                        variant="outlined"
-                        name="rate"
-                        label="Rate"
-                        type="number"
-                        onChange={(event) => {
-                          handleChangeField(event, index)
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      {index ? (
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          onClick={() => handleRemoveField(index)}
-                        >
-                          -Remove
-                        </Button>
-                      ) : (
-                        ''
-                      )}
-                    </Grid>
-                  </Grid>
-                ))}
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  onClick={() => {
-                    handleAddField()
+                {/* Field array is for dynamic array
+                Render props which is function as child component (Fun)  */}
+                <FieldArray name="products">
+                  {/* FieldArray pass a props autometically */}
+                  {(arrayProps) => {
+                    const { push, remove, form } = arrayProps
+                    const { values } = form
+                    const { products } = values
+                    return (
+                      <>
+                        {products.map((product, index) => (
+                          <Grid
+                            item
+                            container
+                            xs={12}
+                            spacing={2}
+                            key={product.id}
+                          >
+                            <Grid item xs={3}>
+                              <Field
+                                fullWidth
+                                variant="outlined"
+                                name={`products[${index}]['color']`}
+                                label="Color"
+                                render={({ field }) => <TextField {...field} />}
+                              />
+                            </Grid>
+                            <Grid item xs={3}>
+                              <Field
+                                fullWidth
+                                variant="outlined"
+                                name={`products[${index}]['tileSize']`}
+                                label="Tile Size"
+                                render={({ field }) => <TextField {...field} />}
+                              />
+                            </Grid>
+                            <Grid item xs={3}>
+                              <Field
+                                fullWidth
+                                variant="outlined"
+                                name={`products[${index}]['quantity']`}
+                                label="Quantity"
+                                render={({ field }) => <TextField {...field} />}
+                              />
+                            </Grid>
+                            <Grid item xs={3}>
+                              <Field
+                                fullWidth
+                                variant="outlined"
+                                name={`products[${index}]['rate']`}
+                                label="Rate"
+                                render={({ field }) => <TextField {...field} />}
+                              />
+                            </Grid>
+                            <Grid item xs={6}>
+                              <Button
+                                type="button"
+                                fullWidth
+                                variant="outlined"
+                                onClick={() => remove(index)}
+                              >
+                                -Remove
+                              </Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                              <Button
+                                type="button"
+                                fullWidth
+                                variant="outlined"
+                                onClick={() =>
+                                  push({
+                                    id: Date.now(),
+                                    color: '',
+                                    quantity: '',
+                                    tileSize: '',
+                                    rate: '',
+                                  })
+                                }
+                              >
+                                +Add
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        ))}
+                      </>
+                    )
                   }}
-                >
-                  + ADD
-                </Button>
+                </FieldArray>
               </Grid>
               <Grid item xs={12}>
                 <Button fullWidth type="submit" variant="contained">
