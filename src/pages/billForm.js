@@ -1,5 +1,5 @@
 // import { useState } from 'react'
-import { Button, Grid, Typography, TextField } from '@mui/material'
+import { Button, Grid, Typography } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import TextFieldWrapper from '../components/FormsUI/TextField'
 import SelectWrapper from '../components/FormsUI/Select'
@@ -71,7 +71,10 @@ const BillForm = () => {
                 <SelectWrapper name="code" label="Code" />
               </Grid>
               <Grid item xs={12}>
-                <SelectWrapper name="marketingOfficer" label="Marketing Officer" />
+                <SelectWrapper
+                  name="marketingOfficer"
+                  label="Marketing Officer"
+                />
               </Grid>
               <Grid item xs={12}>
                 <Typography>Order informations</Typography>
@@ -104,8 +107,10 @@ const BillForm = () => {
                                 variant="outlined"
                                 name={`products[${index}]['color']`}
                                 label="Color"
-                                render={({ field }) => <TextField {...field} />}
-                              />
+                              >
+                                {/* Render props to hook mui field with formik otherwise its will not work */}
+                                {({ field }) => <TextFieldWrapper {...field} />}
+                              </Field>
                             </Grid>
                             <Grid item xs={3}>
                               <Field
@@ -113,8 +118,9 @@ const BillForm = () => {
                                 variant="outlined"
                                 name={`products[${index}]['tileSize']`}
                                 label="Tile Size"
-                                render={({ field }) => <TextField {...field} />}
-                              />
+                              >
+                                {({ field }) => <TextFieldWrapper {...field} />}
+                              </Field>
                             </Grid>
                             <Grid item xs={3}>
                               <Field
@@ -122,8 +128,9 @@ const BillForm = () => {
                                 variant="outlined"
                                 name={`products[${index}]['quantity']`}
                                 label="Quantity"
-                                render={({ field }) => <TextField {...field} />}
-                              />
+                              >
+                                {({ field }) => <TextFieldWrapper {...field} />}
+                              </Field>
                             </Grid>
                             <Grid item xs={3}>
                               <Field
@@ -131,8 +138,9 @@ const BillForm = () => {
                                 variant="outlined"
                                 name={`products[${index}]['rate']`}
                                 label="Rate"
-                                render={({ field }) => <TextField {...field} />}
-                              />
+                              >
+                                {({ field }) => <TextFieldWrapper {...field} />}
+                              </Field>
                             </Grid>
                             <Grid item xs={6}>
                               <Button

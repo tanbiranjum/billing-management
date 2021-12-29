@@ -18,6 +18,7 @@ function App() {
       <CssBaseline />
       <Box sx={{ display: 'flex' }}>
         <AppBarUI
+          // passing state and setFuntion to get child changed state to parent
           currentState={mobileOpen}
           setMobileOpenState={setMobileOpen}
         />
