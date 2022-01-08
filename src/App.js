@@ -1,8 +1,10 @@
 import { Box, CssBaseline, Drawer, Toolbar } from '@mui/material'
 import DrawerComponent from './components/DrawerComponent'
 import { useState } from 'react'
-import BillForm from './pages/billForm'
+import BillForm from './pages/BillForm'
+import InvoiceUI from './pages/InvoiceUI'
 import AppBarUI from './components/AppBar'
+import { Routes, Route } from 'react-router-dom'
 
 const drawerWidth = 240
 
@@ -67,7 +69,10 @@ function App() {
           }}
         >
           <Toolbar />
-          <BillForm />
+          <Routes>
+            <Route path="/" element={<BillForm />} />
+            <Route path="/preview" element={<InvoiceUI />} />
+          </Routes>
         </Box>
       </Box>
     </div>

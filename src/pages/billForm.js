@@ -6,6 +6,7 @@ import SelectWrapper from '../components/FormsUI/Select'
 import DateTimePicker from '../components/FormsUI/DateTimePicker'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import FORM_VALIDATION from '../validation/formValidation'
+import { useNavigate } from 'react-router-dom'
 
 const INITIAL_FORM_STATE = {
   name: '',
@@ -28,7 +29,10 @@ const INITIAL_FORM_STATE = {
 }
 
 const BillForm = () => {
-  // const handleSubmit = () => {}
+  const navigate = useNavigate()
+  const handleSubmit = (value) => {
+    navigate('/preview', { state: value })
+  }
 
   return (
     <Grid container direction="column">
@@ -45,9 +49,9 @@ const BillForm = () => {
       <Grid container item>
         <Formik
           initialValues={{ ...INITIAL_FORM_STATE }}
-          validationSchema={FORM_VALIDATION}
+          // validationSchema={FORM_VALIDATION}
           onSubmit={(value) => {
-            console.log(value)
+            handleSubmit(value)
           }}
         >
           <Form>

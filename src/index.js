@@ -4,6 +4,7 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { ThemeProvider } from '@mui/material'
 import theme from './theme'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
@@ -13,7 +14,9 @@ import '@fontsource/roboto/700.css'
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <Router>
+        <App />
+      </Router>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
