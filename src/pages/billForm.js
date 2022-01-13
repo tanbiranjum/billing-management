@@ -5,7 +5,7 @@ import TextFieldWrapper from '../components/FormsUI/TextField'
 import SelectWrapper from '../components/FormsUI/Select'
 import DateTimePicker from '../components/FormsUI/DateTimePicker'
 import { Formik, Form, Field, FieldArray } from 'formik'
-import FORM_VALIDATION from '../validation/formValidation'
+// import FORM_VALIDATION from '../validation/formValidation'
 import { useNavigate } from 'react-router-dom'
 
 const INITIAL_FORM_STATE = {
@@ -19,7 +19,7 @@ const INITIAL_FORM_STATE = {
   products: [
     {
       id: Date.now(),
-      color: 'RED',
+      color: '',
       quantity: '',
       tileSize: '',
       rate: '',
@@ -31,6 +31,9 @@ const INITIAL_FORM_STATE = {
 const BillForm = () => {
   const navigate = useNavigate()
   const handleSubmit = (value) => {
+    value.price = value.products.reduce((acc, current) => {
+      return acc + current.rate * 1
+    }, 0)
     navigate('/preview', { state: value })
   }
 
@@ -72,12 +75,17 @@ const BillForm = () => {
                 <TextFieldWrapper name="address" label="Address" />
               </Grid>
               <Grid item xs={12}>
-                <SelectWrapper name="code" label="Code" />
+                <SelectWrapper
+                  name="code"
+                  label="Code"
+                  selectFieldName={'code'}
+                />
               </Grid>
               <Grid item xs={12}>
                 <SelectWrapper
                   name="marketingOfficer"
                   label="Marketing Officer"
+                  selectFieldName={'marketingOfficer'}
                 />
               </Grid>
               <Grid item xs={12}>

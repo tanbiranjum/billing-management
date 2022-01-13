@@ -1,6 +1,6 @@
 import {
   Box,
-  CssBaseline,
+  Button,
   Grid,
   Paper,
   Table,
@@ -13,33 +13,23 @@ import {
 } from '@mui/material'
 
 import { useLocation } from 'react-router-dom'
+import useStyles from './style'
 
-import { makeStyles } from '@mui/styles'
+import { db } from '../../firebase-config'
+import { collection, addDoc } from 'firebase/firestore'
 
-const useStyles = makeStyles({
-  invoiceMargin: {
-    marginLeft: '10px',
-    color: '#ffff',
-    padding: '10px',
-  },
-  headline: {
-    color: 'black',
-    textDecoration: 'underline',
-  },
-})
-
-const value = {
-  name: 'MD. Tanbir Anjum',
-  phone: '01703586871',
-  address: 'Uttara, Dhaka, Bangladesh',
-  date: '12-08-21',
-  code: '8081',
-  marketingOfficer: 'Md. Abdur Rahman',
-  description: 'Salimullah incorporation Rahman tiles hello i am Rahman',
+const INITIAL_FORM_STATE = {
+  name: '',
+  phone: '',
+  address: '',
+  date: '',
+  code: '',
+  marketingOfficer: '',
+  description: '',
   products: [
     {
       id: Date.now(),
-      color: 'RED',
+      color: '',
       quantity: '',
       tileSize: '',
       rate: '',
@@ -48,12 +38,25 @@ const value = {
   price: 0,
 }
 
-const InvoiceUI = (props) => {
+const InvoiceUI = () => {
+  const invoiceCollection = collection(db, 'invoice')
+
+  const addToInvoice = async () => {
+    try {
+      await addDoc(invoiceCollection, state)
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+
   const classes = useStyles()
-  const { state } = useLocation()
+
+  let { state } = useLocation()
+  if (state === null) {
+    state = INITIAL_FORM_STATE
+  }
   return (
     <div>
-      <CssBaseline />
       <Box
         sx={{
           width: '100%',
@@ -61,7 +64,7 @@ const InvoiceUI = (props) => {
           backgroundColor: 'primary.dark',
         }}
       >
-        <Typography variant="h4" align="center">
+        <Typography variant="h4" align="center" className={classes.Color}>
           INVOICE
         </Typography>
         <Grid container justifyContent="space-between">
@@ -74,16 +77,16 @@ const InvoiceUI = (props) => {
               Invoices to
             </Typography>
             <Typography variant="p" display="block">
-              {value.date}
+              {state.date}
             </Typography>
             <Typography variant="p" display="block">
-              {value.name}
+              {state.name}
             </Typography>
             <Typography variant="p" display="block">
-              {value.phone}
+              {state.phone}
             </Typography>
             <Typography variant="p" display="block">
-              {value.address}
+              {state.address}
             </Typography>
           </Grid>
           <Grid item xs={3} className={classes.invoiceMargin}>
@@ -99,10 +102,10 @@ const InvoiceUI = (props) => {
               Invoice no: 12032
             </Typography>
             <Typography variant="p" display="block" align="right">
-              {value.marketingOfficer}
+              {state.marketingOfficer}
             </Typography>
             <Typography variant="p" display="block" align="right">
-              {value.code}
+              {state.code}
             </Typography>
           </Grid>
         </Grid>
@@ -118,29 +121,37 @@ const InvoiceUI = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell rowSpan={6}>1</TableCell>
-                <TableCell>RED</TableCell>
-                <TableCell>1</TableCell>
-                <TableCell>1</TableCell>
-                <TableCell>1</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>RED</TableCell>
-                <TableCell>1</TableCell>
-                <TableCell>1</TableCell>
-                <TableCell>1</TableCell>
-              </TableRow>
+              {state.products.map((product, index) => (
+                <TableRow key={index}>
+                  {index === 0 ? (
+                    <TableCell rowSpan={state.products.length}>
+                      {state.description}
+                    </TableCell>
+                  ) : (
+                    ''
+                  )}
+                  <TableCell>{product.color}</TableCell>
+                  <TableCell>{product.tileSize}</TableCell>
+                  <TableCell>{product.quantity}</TableCell>
+                  <TableCell>{product.rate}</TableCell>
+                </TableRow>
+              ))}
               <TableRow>
                 <TableCell colSpan={5} align="right">
-                  Price: Hello
+                  <Typography
+                    variant="p"
+                    display="block"
+                    className={classes.priceTag}
+                  >
+                    Price: {state.price}
+                  </Typography>
                 </TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
+        <Button onClick={addToInvoice}>Print</Button>
       </Box>
-      {console.log(state)}
     </div>
   )
 }

@@ -5,6 +5,8 @@ import reportWebVitals from './reportWebVitals'
 import { ThemeProvider } from '@mui/material'
 import theme from './theme'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import store from './store'
 
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
@@ -14,9 +16,11 @@ import '@fontsource/roboto/700.css'
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <Router>
-        <App />
-      </Router>
+      <Provider store={store}>
+        <Router>
+          <App />
+        </Router>
+      </Provider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
